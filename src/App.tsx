@@ -4,7 +4,6 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent,
   Stack,
 } from "@mui/material";
 import "./App.css";
@@ -37,66 +36,36 @@ const ITEMS = [
 ];
 
 function App() {
-  const [like, setLike] = useState("");
-  const [dontLike, setDontLike] = useState("");
-  const [beGrown, setBeGrown] = useState("");
+  const [selectedList, setSelectedList] = useState(["", "", "", ""]);
 
   return (
     <Stack spacing={2}>
-      <FormControl fullWidth>
-        <InputLabel id="like">好きなフルーツ</InputLabel>
-        <Select
-          labelId="like"
-          id="like-select"
-          value={like}
-          label="好きなフルーツ"
-          onChange={({ target }) => setLike(target.value)}
-        >
-          {ITEMS.filter(
-            ({ value }) => ![dontLike, beGrown].includes(value)
-          ).map((item) => (
-            <MenuItem value={item.value} key={item.value}>
-              {item.label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <FormControl fullWidth>
-        <InputLabel id="dont-like">嫌いなフルーツ</InputLabel>
-        <Select
-          labelId="dont-like"
-          id="dont-like-select"
-          value={dontLike}
-          label="嫌いなフルーツ"
-          onChange={({ target }) => setDontLike(target.value)}
-        >
-          {ITEMS.filter(({ value }) => ![like, beGrown].includes(value)).map(
-            (item) => (
+      {selectedList.map((selected, index) => (
+        <FormControl fullWidth>
+          <InputLabel id={`select-label-${index + 1}`}>
+            好きなフルーツ({index + 1})
+          </InputLabel>
+          <Select
+            labelId={`select-label-${index + 1}`}
+            id={`select-${index + 1}`}
+            value={selected}
+            label={`好きなフルーツ(${index + 1})`}
+            onChange={({ target }) =>
+              setSelectedList((selectedList) =>
+                selectedList.toSpliced(index, 1, target.value)
+              )
+            }
+          >
+            {ITEMS.filter(
+              ({ value }) => !selectedList.toSpliced(index, 1).includes(value)
+            ).map((item) => (
               <MenuItem value={item.value} key={item.value}>
                 {item.label}
               </MenuItem>
-            )
-          )}
-        </Select>
-      </FormControl>
-      <FormControl fullWidth>
-        <InputLabel id="be-grown">育てたいフルーツ</InputLabel>
-        <Select
-          labelId="be-grown"
-          id="be-grown-select"
-          value={beGrown}
-          label="育てたいフルーツ"
-          onChange={({ target }) => setBeGrown(target.value)}
-        >
-          {ITEMS.filter(({ value }) => ![like, dontLike].includes(value)).map(
-            (item) => (
-              <MenuItem value={item.value} key={item.value}>
-                {item.label}
-              </MenuItem>
-            )
-          )}
-        </Select>
-      </FormControl>
+            ))}
+          </Select>
+        </FormControl>
+      ))}
     </Stack>
   );
 }
